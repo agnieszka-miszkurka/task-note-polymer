@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>task-note demo</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+
+    <link rel="import" href="../bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../bower_components/iron-demo-helpers/demo-snippet.html">
+      <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+    <link rel="import" href="../task-note.html">
+
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles">
+        :root{
+          --primary-color: #382f97;
+          --title-background: #daeaff;
+          --border-color: #9a59ff;
+        }
+      </style>
+    </custom-style>
+
+  </head>
+  <body>
+  <iron-ajax id="ajax" url="https://www.googleapis.com/youtube/v3/search" params='{"part":"snippet", "q":"polymer", "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}' handle-as="json" last-response="{{ajaxResponse}}" on-request="handleRequest"
+             on-response="handleResponse" on-error="handleError"></iron-ajax>
+
+  <div class="vertical-section-container centered">
+    <h3>task-note without decription</h3>
+    <demo-snippet>
+      <template>
+        <task-note title="Get up from bed!" duration="10 min" date="Mon, 22 May 2018"></task-note>
+      </template>
+    </demo-snippet>
+  </div>
+  <div class="vertical-section-container centered">
+    <h3>task-note with description</h3>
+    <demo-snippet>
+      <template>
+        <task-note title="Watch Star Wars" task-description="May the force be with you!" duration="200 min" date="Fri, 4 May 2018"></task-note>
+      </template>
+    </demo-snippet>
+  </div>
+
+  <div id="k"></div>
+
+  <script>
+          let props = {};
+          props.title = "pisac";
+          props.duration = 200;
+          props.date = new Date("Mar 25 2015");
+          let nana = new TaskNote();
+          nana.checkboxChanged({});
+          let con = document.getElementById("k");
+          nana.setProperties(props);
+          let aa = new TaskNote();
+          aa.setProperties(props);
+          con.appendChild(nana);
+          con.appendChild(aa);
+         // console.log("nnn");
+
+          let ajax = document.getElementById("ajax");
+          let request=ajax.generateRequest();
+          request.completes.then(function(req) {
+                  // succesful request, argument is iron-request element
+                  console.log("success");
+                  console.log(req.response);
+              }, function(rejected) {
+                  // failed request, argument is an object
+                  let req = rejected.request;
+                  let error = rejected.error;
+                  console.log(error);
+              }
+          )
+
+
+  </script>
+  </body>
+</html>

@@ -1,0 +1,182 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/paper-card/paper-card.html">
+<link rel="import" href="bower_components/paper-styles/typography.html">
+<link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+
+<!--
+### General Info `<task-note>`
+`<task-note>` displays a task and its details.
+To use, insert `<task-note>` in the body with the following properties:
+    <body>
+      <simple-search></simple-search>
+Example:
+To show the search
+```
+    <body>
+      <task-note title="Watch Star Wars" task-description="May the force be with you!"
+                 duration="200 min" date="Fri, 4 May 2018">
+      </task-note>
+```
+### Documentation Page
+https://agnieszka-miszkurka.github.io/task-note/
+### Demo Page
+https://agnieszka-miszkurka.github.io/task-note/demo/
+### Styling
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------------------|--------------------------------------------|----------|
+|`--primary-color` | The color of the icons and checkbox | `#9a59ff`|
+|`--title-background` | The color of the background for upper part of task note | `#c8d9ff`|
+|`--border-color` | The color of the line between title and description | `#9a59ff`|
+-->
+
+
+<dom-module id="task-note">
+    <template>
+        <style>
+            :host {
+                display: inline-flex;
+                margin: 10px;
+            }
+            paper-card {
+                background: #f4f9fa;
+            }
+
+            .mainContainer {
+                @apply(--layout-horizontal);
+                padding: 10px;
+                border-bottom: 1px solid var(--border-color, #9a59ff);
+                background: var(--title-background, #c8d9ff);
+            }
+
+            .flexchild {
+                @apply(--layout-flex);
+                @apply(--layout-vertical);
+            }
+
+            #tickBox {
+                padding: 5% 0;
+            }
+
+            paper-checkbox {
+                --paper-checkbox-checked-color: var(--primary-color, #9a59ff);
+                --paper-checkbox-checked-ink-color: var(--primary-color, #9a59ff);
+                --paper-checkbox-unchecked-color: var(--primary-color, #9a59ff);
+                --paper-checkbox-unchecked-ink-color: var(--primary-color, #9a59ff);
+            }
+
+            #taskName {
+                @apply(--paper-font-headline);
+                text-align: center;
+                padding: 5px;
+            }
+
+            .taskDetails {
+                color: var(--paper-grey-600);
+                margin: 10px;
+            }
+
+            .description {
+                text-align: center;
+            }
+
+            iron-icon.time {
+                --iron-icon-width: 16px;
+                --iron-icon-height: 16px;
+                color: var(--primary-color,#9a59ff);
+            }
+
+        </style>
+        <paper-card>
+            <div class="mainContainer">
+                <div id="tickBox">
+                    <paper-checkbox on-change="checkboxChanged"></paper-checkbox>
+                </div>
+                <div class="flexchild">
+                    <div id="taskName">[[title]]</div>
+                </div>
+            </div>
+                <div class="taskDetails">
+                    <template is="dom-if" if="{{taskDescription!=''}}">
+                        <p class="description">[[taskDescription]]</p>
+                    </template>
+                    <iron-icon class="time" icon="icons:hourglass-empty"></iron-icon>
+                    <span>[[duration]]&emsp;</span>
+                    <iron-icon class="time" icon="icons:alarm"></iron-icon>
+                    <span>[[date]]</span>
+                </div>
+        </paper-card>
+
+    </template>
+
+    <script>
+        /**
+         * `task-note`
+         * displays a task and its details
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+        class TaskNote extends Polymer.Element {
+            static get is() {
+                return 'task-note';
+            }
+
+            checkboxChanged(event) {
+                this.done = !this.done;
+                return this.done
+            };
+
+            setProperties(props) {
+                    super.setProperties(props);
+                    if (props.duration > 60) {
+                        this.duration = Math.round( props.duration/60 )+ " h";
+                    } else {
+                        this.duration = props.duration + " min";
+                    }
+                    this.date = props.date.toDateString();
+            }
+
+            static get properties() {
+                return {
+                    title: {
+                        type: String,
+                        value: 'Eat a cake!'
+                    },
+                    taskDescription: {
+                        type: String,
+                        value: ''
+                    },
+                    duration: {
+                        type: String,
+                        value: '?'
+                    },
+                    date: {
+                        type: String,
+                        value: 'Mon, 12 April 1999'
+                    },
+                    done: {
+                        type: Boolean,
+                        value: false,
+                        notify: true,
+                        reflectToAttribute: true
+                    }
+                };
+            }
+
+            ready() {
+                super.ready();
+            }
+
+            constructor (){
+                super();
+            }
+
+        }
+
+        window.customElements.define(TaskNote.is, TaskNote);
+    </script>
+</dom-module>
